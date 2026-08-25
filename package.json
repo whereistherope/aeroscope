@@ -1,0 +1,13 @@
+{
+  "name": "aeroscope",
+  "version": "0.9.1-test",
+  "private": true,
+  "type": "module",
+  "description": "Aviation weather-first situational awareness prototype with turbulence as the primary differentiator",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node tests/assurance.mjs"
+  }
+}

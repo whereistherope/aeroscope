@@ -1,0 +1,84 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+  edge_functions = "netlify/edge-functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Same-origin CDN proxy fallbacks. These bypass Lambda/AWS function egress.
+[[redirects]]
+  from = "/proxy/adsbfi/*"
+  to = "https://opendata.adsb.fi/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/proxy/airplanes/*"
+  to = "https://api.airplanes.live/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/proxy/adsblol/*"
+  to = "https://api.adsb.lol/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/aircraft"
+  to = "/.netlify/functions/api-aircraft"
+  status = 200
+
+
+
+[[redirects]]
+  from = "/api/flight"
+  to = "/.netlify/functions/api-flight"
+  status = 200
+
+[[redirects]]
+  from = "/api/wind"
+  to = "/.netlify/functions/api-wind"
+  status = 200
+
+[[redirects]]
+  from = "/api/radar"
+  to = "/.netlify/functions/api-radar"
+  status = 200
+
+[[redirects]]
+  from = "/api/metar"
+  to = "/.netlify/functions/api-metar"
+  status = 200
+
+[[redirects]]
+  from = "/api/turbulence"
+  to = "/.netlify/functions/api-turbulence"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/api/turbulence-potential"
+  to = "/.netlify/functions/api-turbulence-potential"
+  status = 200
+
+[[redirects]]
+  from = "/api/turbulence-profile"
+  to = "/.netlify/functions/api-turbulence-profile"
+  status = 200
+
+[[redirects]]
+  from = "/api/route"
+  to = "/.netlify/functions/api-route"
+  status = 200
+
+[[redirects]]
+  from = "/api/route-weather"
+  to = "/.netlify/functions/api-route-weather"
+  status = 200
