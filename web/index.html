@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05090b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>AeroScope · Aviation Atmospheric Intelligence</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="./css/01.css" />
+  <link rel="stylesheet" href="./css/02.css" />
+  <link rel="stylesheet" href="./css/03.css" />
+  <link rel="stylesheet" href="./css/04.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-copy"><strong>AEROSCOPE</strong><span class="beta">AVIATION ATMOSPHERIC INTELLIGENCE · v1 alpha</span></span>
+      </div>
+      <div class="search">
+        <input id="search" aria-label="Search airport or live flight" placeholder="Search flight, airport or region…" autocomplete="off" autocapitalize="characters" />
+        <button id="searchButton" type="button">Search</button>
+      </div>
+      <nav class="mode-nav" aria-label="AeroScope modes">
+        <button class="mode-button active" type="button" data-mode="overview">Overview</button>
+        <button class="mode-button" type="button" data-mode="route">Route</button>
+        <button class="mode-button" type="button" data-mode="turbulence">Turbulence</button>
+        <button class="mode-button" type="button" data-mode="airport">Airport Ops</button>
+      </nav>
+      <div class="top-actions">
+        <button id="routeButton" class="top-button route" type="button">Reset</button>
+        <button id="layersButton" class="top-button active" type="button">Layers</button>
+        <span class="live-indicator"><i></i>LIVE DATA</span>
+      </div>
+    </header>
+
+    <main class="scope">
+      <div id="map"></div>
+
+      <aside id="panel" class="panel glass">
+        <div class="panel-head"><h2>Layers</h2><span class="live-chip">● LIVE</span></div>
+        <details class="layer-group" open>
+          <summary>Traffic</summary>
+          <div class="layer-content">
+            <label class="layer-row">Aircraft<input id="toggleAircraft" type="checkbox" checked /></label>
+          </div>
+        </details>
+        <details class="layer-group" open>
+          <summary>Weather</summary>
+          <div class="layer-content">
+            <label class="layer-row">Rain radar<input id="toggleRadar" type="checkbox" checked /></label>
+            <label class="layer-row">Wind field<input id="toggleWind" type="checkbox" checked /></label>
+            <label class="layer-row">Model cloud<input id="toggleCloud" type="checkbox" /></label>
+            <label class="layer-row">Airport weather<input id="toggleAirports" type="checkbox" checked /></label>
+          </div>
+        </details>
+        <details class="layer-group" open>
+          <summary>Turbulence</summary>
+          <div class="layer-content">
+            <label class="layer-row">Turbulence suite<input id="toggleTurb" type="checkbox" checked /></label>
+            <div class="turb-controls" aria-label="Turbulence layer controls">
+              <button id="turbModelButton" class="turb-chip active" type="button">MODEL</button>
+              <button id="turbObsButton" class="turb-chip active" type="button">OBSERVED</button>
+              <button id="turbAdvButton" class="turb-chip active" type="button">ADVISORY</button>
+            </div>
+            <div class="turb-legend">
+              <div class="legend-line"><span class="legend-swatch" style="background:linear-gradient(90deg,#51686e,#7f8c76)"></span>Model · minimal / low</div>
+              <div class="legend-line"><span class="legend-swatch" style="background:linear-gradient(90deg,#8d7149,#aa7d4e)"></span>Model · elevated</div>
+              <div class="legend-line"><span class="legend-swatch" style="background:linear-gradient(90deg,#92534f,#aa5f58)"></span>Model · high</div>
+            </div>
+            <div class="small subnote">Model is an experimental wind-shear / stability diagnostic, not EDR. Observed = recent PIREP/AIREP. Advisory = SIGMET/AIRMET/G-AIRMET.</div>
+          </div>
+        </details>
+        <details class="layer-group">
+          <summary>System</summary>
+          <div class="layer-content">
+            <div class="panel-title"><span>Feed status</span></div>
+            <div class="feed-list">
+              <div class="feed"><span>Traffic</span><span id="statusAircraft">Connecting…</span></div>
+              <button id="trafficRetry" class="panel-action" type="button">REFRESH TRAFFIC</button>
+              <div class="feed"><span>Wind</span><span id="statusWind">Connecting…</span></div>
+              <div class="feed"><span>Radar</span><span id="statusRadar">Connecting…</span></div>
+              <div class="feed"><span>METAR</span><span id="statusMetar">Connecting…</span></div>
+              <div class="feed"><span>Turb mdl</span><span id="statusTurbModel">Connecting…</span></div>
+              <div class="feed"><span>Turb obs</span><span id="statusTurbObs">Connecting…</span></div>
+              <div class="feed"><span>Advisory</span><span id="statusTurb">Connecting…</span></div>
+            </div>
+            <div class="small" style="margin-top:9px">Experimental situational-awareness display. Not for navigation, dispatch or operational decisions.</div>
+          </div>
+        </details>
+      </aside>
+
+      <nav id="altbar" class="altbar glass" aria-label="Weather altitude"><span class="wx-label">WX ALTITUDE</span></nav>
+      <div id="timestamp" class="timestamp glass">FL300 · NOW</div>
+      <div id="notice" class="notice hidden"></div>
+
+      <section id="detailCard" class="detail-card glass hidden" aria-live="polite">
+        <div class="detail-head">
+          <div><div id="detailTitle" class="detail-title">—</div><div id="detailSub" class="detail-sub"></div></div>
+          <button id="detailClose" class="detail-close" type="button" aria-label="Close aircraft details">×</button>
+        </div>
+        <div id="detailGrid" class="detail-grid"></div>
+        <div id="routeInfo" class="route-info hidden"></div>
+      </section>
+
+      <section id="turbProfileCard" class="profile-card glass hidden" aria-live="polite">
+        <div class="detail-head">
+          <div><div id="turbProfileTitle" class="detail-title">TURB PROFILE</div><div id="turbProfileSub" class="detail-sub"></div></div>
+          <button id="turbProfileClose" class="detail-close" type="button" aria-label="Close turbulence profile">×</button>
+        </div>
+        <div id="turbProfileRows" style="margin-top:8px"></div>
+        <div id="turbProfileMeta" class="profile-meta"></div>
+      </section>
+
+      <section class="timebar glass">
+        <div class="time-head"><span>Weather timeline</span><strong id="timeLabel">NOW</strong></div>
+        <input id="timeSlider" type="range" min="-2" max="6" step="1" value="0" aria-label="Weather time offset in hours" />
+      </section>
+    </main>
+  </div>
+  <script src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./js/app-01.js"></script>
+  <script src="./js/app-02.js"></script>
+  <script src="./js/app-03.js"></script>
+  <script src="./js/app-04.js"></script>
+  <script src="./js/app-05a.js"></script>
+  <script src="./js/app-05b.js"></script>
+</body>
+</html>
