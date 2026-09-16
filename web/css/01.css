@@ -1,0 +1,65 @@
+:root {
+  color-scheme: dark;
+  --bg: #05090b;
+  --panel: rgba(12, 18, 21, .46);
+  --panel-strong: rgba(9, 15, 18, .60);
+  --panel-soft: rgba(20, 29, 33, .34);
+  --panel-hover: rgba(42, 57, 62, .30);
+  --line: rgba(211, 229, 233, .13);
+  --line-strong: rgba(218, 235, 239, .23);
+  --text: #e2ebed;
+  --muted: #839196;
+  --muted-2: #5d6d72;
+  --accent: #86c8cf;
+  --accent-soft: rgba(134, 200, 207, .12);
+  --ok: #81c59d;
+  --warn: #b38a58;
+  --danger: #a85f5b;
+  --shadow: 0 22px 70px rgba(0,0,0,.30);
+  --radius: 13px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+body { overflow: hidden; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+#app { position: fixed; inset: 0; display: grid; grid-template-rows: 56px 1fr; background: var(--bg); }
+#map { width: 100%; height: 100%; background: #05090b; }
+.glass {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.035), transparent 32%),
+    linear-gradient(180deg, rgba(21,30,34,.48), rgba(8,13,16,.43));
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow), inset 0 1px rgba(255,255,255,.035);
+  backdrop-filter: blur(28px) saturate(118%);
+  -webkit-backdrop-filter: blur(28px) saturate(118%);
+}
+.topbar {
+  min-height: 56px; padding: max(7px, env(safe-area-inset-top)) 18px 7px;
+  display: grid; grid-template-columns: max-content minmax(220px, 510px) 1fr max-content; align-items: center; gap: 18px;
+  border-bottom: 1px solid rgba(212,230,234,.09);
+  background: linear-gradient(180deg, rgba(6,11,13,.88), rgba(5,10,12,.76));
+  backdrop-filter: blur(26px) saturate(112%); -webkit-backdrop-filter: blur(26px) saturate(112%);
+  z-index: 1200;
+}
+.brand { display:flex; align-items:center; gap:12px; min-width:max-content; }
+.brand-mark { position:relative; width:22px; height:26px; opacity:.90; }
+.brand-mark::before,.brand-mark::after { content:""; position:absolute; bottom:1px; width:1.6px; height:25px; background:#cbd7da; border-radius:2px; }
+.brand-mark::before { left:7px; transform:rotate(24deg); transform-origin:bottom; }
+.brand-mark::after { right:7px; transform:rotate(-24deg); transform-origin:bottom; }
+.brand-copy strong { display:block; font-size:13px; font-weight:570; letter-spacing:.28em; }
+.beta { display:block; margin-top:2px; color:#68777b; font: 7.5px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.14em; text-transform:uppercase; }
+.search { display:flex; gap:5px; min-width:0; }
+.search input { width:100%; min-width:0; border:1px solid var(--line); border-radius:10px; background:rgba(24,34,38,.28); color:var(--text); padding:9px 12px; outline:none; font-size:12px; letter-spacing:.01em; box-shadow:inset 0 1px rgba(255,255,255,.015); }
+.search input::placeholder { color:#66767a; }
+.search input:focus { border-color:rgba(134,200,207,.34); background:rgba(28,40,44,.40); }
+.search button,.top-button,.mode-button { border:1px solid var(--line); border-radius:8px; background:rgba(20,29,33,.30); color:#a7b4b7; padding:8px 11px; font-size:9px; letter-spacing:.10em; text-transform:uppercase; }
+.search button:hover,.top-button:hover,.mode-button:hover { background:var(--panel-hover); color:#dce5e7; }
+.search button.busy { opacity:.5; pointer-events:none; }
+.top-button.active,.mode-button.active { color:#e0f0f2; border-color:rgba(134,200,207,.27); background:rgba(65,100,106,.17); box-shadow: inset 0 -1px rgba(134,200,207,.45), 0 0 20px rgba(74,123,130,.07); }
+.mode-nav { justify-self:center; display:flex; gap:1px; align-items:center; }
+.mode-button { border-color:transparent; background:transparent; border-radius:6px; padding:8px 12px; }
+.top-actions { display:flex; gap:7px; align-items:center; }
+.live-indicator { display:flex; align-items:center; gap:7px; border-left:1px solid var(--line); padding-left:14px; margin-left:4px; color:#829195; font:8px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.10em; }
+.live-indicator i { width:5px; height:5px; border-radius:50%; background:var(--ok); box-shadow:0 0 12px rgba(129,197,157,.34); }
+.scope { position:relative; min-height:0; overflow:hidden; }
